@@ -53,7 +53,8 @@ func receiveMessages(ctx context.Context, sub *pubsub.Subscription) {
 		if err := json.Unmarshal(m.Data, &dat); err != nil {
 			log.Println(err)
 		}
-		fmt.Println(json.MarshalIndent(dat, "", "    "))
+		prettyJSON, _ := json.MarshalIndent(dat, "", "    ")
+		fmt.Println(string(prettyJSON))
 		fmt.Println()
 		if dat["status"] == "SUCCESS" || dat["status"] == "FAILURE" {
 			repo := dat["substitutions"].(map[string]interface{})["REPO_NAME"]
