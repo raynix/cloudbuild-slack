@@ -54,12 +54,12 @@ func receiveMessages(ctx context.Context, sub *pubsub.Subscription) {
 		if err := json.Unmarshal(m.Data, &dat); err != nil {
 			log.Println(err)
 		}
-		fmt.Println(dat)
-		// substitutions := dat["substitutions"]
-		// if dat["status"] == "SUCCESS" || dat["status"] == "FAILURE" {
-		// 	message := fmt.Sprintf("CloudBuild notification: \nStatus: %v\nCommit: https://github.com/raynix/%v/commit/%v\nBuild log: %v\n", dat["status"], substitutions["REPO_NAME"], substitutions["COMMIT_SHA"], dat["logUrl"])
-		// 	postToSlack(message)
-		// }
+		if dat["status"] == "SUCCESS" || dat["status"] == "FAILURE" {
+			repo := dat["substitutions"].(map[string]interface{})["REPO_NAME"]
+			commit := dat["substitutions"].(map[string]interface{})["COMMIT_SHA"]
+			message := fmt.Sprintf("CloudBuild notification: \nStatus: %v\nCommit: https://github.com/raynix/%v/commit/%v\nBuild log: %v\n", dat["status"], repo, commit, dat["logUrl"])
+			postToSlack(message)
+		}
 		m.Ack()
 	})
 	log.Fatal(err)
