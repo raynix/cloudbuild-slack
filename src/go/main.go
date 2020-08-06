@@ -49,11 +49,12 @@ func findOrCreateSub(ctx context.Context, client *pubsub.Client, topic *pubsub.T
 func receiveMessages(ctx context.Context, sub *pubsub.Subscription) {
 	err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
 		fmt.Println("Received message:")
-		fmt.Printf("------\n%v\n------\n", string(m.Data))
 		var dat map[string]interface{}
 		if err := json.Unmarshal(m.Data, &dat); err != nil {
 			log.Println(err)
 		}
+		fmt.Println(json.MarshalIndent(dat, "", "    "))
+		fmt.Println()
 		if dat["status"] == "SUCCESS" || dat["status"] == "FAILURE" {
 			repo := dat["substitutions"].(map[string]interface{})["REPO_NAME"]
 			commit := dat["substitutions"].(map[string]interface{})["COMMIT_SHA"]
