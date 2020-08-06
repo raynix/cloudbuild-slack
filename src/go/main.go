@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -42,6 +43,11 @@ func receiveMessages(ctx context.Context, sub *pubsub.Subscription) {
 	err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
 		fmt.Println("Received message:")
 		fmt.Printf("------\n%v\n------\n", string(m.Data))
+		var dat map[string]interface{}
+		if err := json.Unmarshal(m.Data, &dat); err != nil {
+			log.Println(err)
+		}
+		fmt.Println(dat["status"])
 		m.Ack()
 	})
 	log.Fatal(err)
