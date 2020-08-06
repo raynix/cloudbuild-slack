@@ -41,7 +41,7 @@ func findOrCreateSub(ctx context.Context, client *pubsub.Client, topic *pubsub.T
 func receiveMessages(ctx context.Context, sub *pubsub.Subscription) {
 	err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
 		fmt.Println("Received message:")
-		fmt.Printf("------\n%v\n------\n", m.Data)
+		fmt.Printf("------\n%v\n------\n", string(m.Data))
 		m.Ack()
 	})
 	log.Fatal(err)
