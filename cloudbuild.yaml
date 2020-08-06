@@ -1,8 +1,10 @@
 steps:
   - id: unit-test
     name: golang:1.14.6
-    entrypoint: go
+    entrypoint: bash
     dir: src/go
     args:
-      - test
-      - -coverpkg=./..
+      - c
+      - |
+        go get cloud.google.com/go/pubsub
+        go test -coverpkg=./..
