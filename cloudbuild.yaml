@@ -1,0 +1,8 @@
+steps:
+  - id: unit-test
+    name: golang:1.14.6
+    entrypoint: go
+    dir: src/go
+    args:
+      - test
+      - -coverpkg=./..

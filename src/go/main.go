@@ -13,6 +13,10 @@ var projectID = "idyllic-depth-239301"
 var topicName = "cloud-builds"
 var subName = "cloud-build-slack-sub"
 
+func hello() (helloOutput string) {
+	return "Hello, world!"
+}
+
 func findOrCreateSub(ctx context.Context, client *pubsub.Client, topic *pubsub.Topic, subName string) (sub *pubsub.Subscription) {
 	sub = client.Subscription(subName)
 	ok, err := sub.Exists(ctx)
@@ -44,7 +48,6 @@ func receiveMessages(ctx context.Context, sub *pubsub.Subscription) {
 }
 
 func main() {
-	fmt.Printf("hello, world\n")
 	ctx := context.Background()
 	client, err := pubsub.NewClient(ctx, projectID)
 	if err != nil {
