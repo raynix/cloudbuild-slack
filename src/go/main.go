@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 	"time"
 
 	"cloud.google.com/go/pubsub"
@@ -13,6 +16,10 @@ import (
 var projectID = "idyllic-depth-239301"
 var topicName = "cloud-builds"
 var subName = "cloud-build-slack-sub"
+
+type slackMessage struct {
+	Text string `json:"text"`
+}
 
 func hello() (helloOutput string) {
 	return "Hello, world!"
@@ -47,10 +54,27 @@ func receiveMessages(ctx context.Context, sub *pubsub.Subscription) {
 		if err := json.Unmarshal(m.Data, &dat); err != nil {
 			log.Println(err)
 		}
-		fmt.Println(dat["status"])
+		fmt.Println(dat)
+		// substitutions := dat["substitutions"]
+		// if dat["status"] == "SUCCESS" || dat["status"] == "FAILURE" {
+		// 	message := fmt.Sprintf("CloudBuild notification: \nStatus: %v\nCommit: https://github.com/raynix/%v/commit/%v\nBuild log: %v\n", dat["status"], substitutions["REPO_NAME"], substitutions["COMMIT_SHA"], dat["logUrl"])
+		// 	postToSlack(message)
+		// }
 		m.Ack()
 	})
 	log.Fatal(err)
+}
+
+func postToSlack(text string) {
+	payload := slackMessage{Text: text}
+	jsonValue, _ := json.Marshal(payload)
+
+	token := os.Getenv("SLACK_TOKEN")
+	if len(token) == 0 {
+		log.Fatal("SLACK_TOKEN not set!")
+	}
+	response, _ := http.Post("https://hooks.slack.com/services/"+token, "application/json", bytes.NewBuffer(jsonValue))
+	log.Printf("Request sent. Response code is %v: %v\n", response.Status, response.StatusCode)
 }
 
 func main() {
