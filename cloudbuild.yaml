@@ -6,6 +6,6 @@ steps:
     args:
       - -c
       - |
-        echo "Dummy build 8"
+        echo "Dummy build 9"
         #go get cloud.google.com/go/pubsub
         #go test -coverpkg=./..
