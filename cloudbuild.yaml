@@ -4,7 +4,7 @@ steps:
     entrypoint: bash
     dir: src/go
     args:
-      - c
+      - -c
       - |
         go get cloud.google.com/go/pubsub
         go test -coverpkg=./..
